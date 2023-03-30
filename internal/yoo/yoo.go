@@ -100,7 +100,7 @@ func run() error {
 		return err
 	}
 
-	httpsrv := &http.Server{Addr: viper.GetString("addr"), Handler: r}
+	httpsrv := &http.Server{Addr: ":8080", Handler: r}
 
 	log.Infow("Start to listening the incoming requests on http address", "addr", viper.GetString("addr"))
 

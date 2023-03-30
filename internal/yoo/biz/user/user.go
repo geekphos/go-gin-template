@@ -69,7 +69,7 @@ func (b *userBiz) Login(ctx context.Context, r *v1.LoginRequest) (*v1.LoginRespo
 func (b *userBiz) ChangePassword(ctx context.Context, email string, r *v1.ChangePasswordRequest) error {
 	userM, err := b.ds.Users().Get(ctx, email)
 	if err != nil {
-		return err
+		return errno.ErrUserNotFound
 	}
 
 	if err := auth.Compare(userM.Password, r.OldPassword); err != nil {
@@ -78,7 +78,7 @@ func (b *userBiz) ChangePassword(ctx context.Context, email string, r *v1.Change
 
 	userM.Password, _ = auth.Encrypt(r.NewPassword)
 	if err := b.ds.Users().Update(ctx, userM); err != nil {
-		return err
+		return errno.InternalServerError
 	}
 	return nil
 }

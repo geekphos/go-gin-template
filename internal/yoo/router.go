@@ -4,11 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	mw "phos.cc/yoo/internal/pkg/middleware"
 
 	_ "phos.cc/yoo/docs"
 	"phos.cc/yoo/internal/pkg/core"
 	"phos.cc/yoo/internal/pkg/errno"
-	mw "phos.cc/yoo/internal/pkg/middleware"
 	"phos.cc/yoo/internal/yoo/controller/v1/user"
 	"phos.cc/yoo/internal/yoo/store"
 )
@@ -35,13 +35,12 @@ func installRouters(g *gin.Engine) error {
 
 		// 创建 users 路由分组
 		userv1 := v1.Group("/users")
-		userv1.Use(mw.Auth())
 		{
-			{
-				userv1.POST("", uc.Create)
-				userv1.PATCH("/:email/change-password", uc.ChangePassword)
-			}
+			userv1.POST("", uc.Create)
+			userv1.Use(mw.Auth())
+			userv1.PATCH("/:email/change-password", uc.ChangePassword)
 		}
+
 	}
 
 	return nil
